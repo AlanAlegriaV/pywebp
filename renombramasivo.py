@@ -1,4 +1,5 @@
 import os
+import datetime
 from PIL import Image
 
 def resize_and_convert_image(image_path, timestamp):
@@ -33,7 +34,7 @@ def process_folder(folder_path, timestamp, input_format):
 
 def main():
     # Solicitar al usuario que ingrese la ruta de la carpeta
-    root_folder = input("Ingrese la ruta de la carpeta: ")
+    root_folder = "C:/Users/SSDD/Desktop/test"
     # Verificar que la ruta sea una carpeta válida
     if not os.path.isdir(root_folder):
         print(f"La ruta '{root_folder}' no es una carpeta válida.")
@@ -50,7 +51,8 @@ def main():
         return
 
     # Solicitar al usuario que ingrese un timestamp
-    timestamp = input("Ingrese un timestamp: ")
+    timestamp_seconds = datetime.datetime.now().timestamp()
+    timestamp = int(timestamp_seconds)
 
     # Procesar la carpeta raíz y sus subcarpetas
     process_folder(root_folder, timestamp, input_format)
