@@ -86,7 +86,7 @@ image_label = Label(root, image=img)
 image_label.image = img  # Mantiene una referencia para evitar que la imagen sea eliminada por el recolector de basura
 image_label.pack(pady=5, padx=5, side="top")  # Alinear a la izquierda
 
-start_button = Button(root, text="Iniciar Proceso", command=start_processing, bg="red")
+start_button = Button(root, text="Iniciar Proceso", command=start_processing, bg="lightblue")
 start_button.pack(pady=5)
 
 root.mainloop()
