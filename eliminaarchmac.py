@@ -37,7 +37,6 @@ def eliminar_archivos(carpeta):
     messagebox.showinfo("Proceso Completado", f"Se han eliminado {archivos_eliminados} archivos ocultos en la carpeta y subcarpetas.")
     etiqueta_cantidad_underscore.config(text=f"Cantidad de archivos '._' encontrados: 0")
     etiqueta_cantidad_ds_store.config(text=f"Cantidad de archivos '.DS_Store' encontrados: 0")
-    boton_eliminar.config(text="Cerrar", command=ventana.quit)
 
 # Crear la ventana principal
 ventana = tk.Tk()
