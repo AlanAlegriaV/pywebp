@@ -44,7 +44,7 @@ class AplicacionMarcaDeAgua:
         self.barra_progreso.grid(row=7, column=0, pady=5, padx=5, sticky="n")
 
         # Crear un marco para la previsualización y el borde negro
-        self.previsualizacion_frame = Frame(ventana, width=550, height=550, bd=2, relief="solid")
+        self.previsualizacion_frame = Frame(ventana, width=500, height=500, bd=2, relief="solid")
         self.previsualizacion_frame.grid(row=0, column=1, rowspan=8, pady=5, padx=5, sticky="nsew")
         self.previsualizacion_frame.grid_propagate(False)  # Evitar que el marco cambie de tamaño
 
@@ -66,7 +66,7 @@ class AplicacionMarcaDeAgua:
             if archivos_imagen:
                 imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivos_imagen[0]))
                 imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=10, margen_izquierdo=10)
-                imagen_con_marca_de_agua.thumbnail((550, 550))  # Redimensionar la imagen a 550x550
+                imagen_con_marca_de_agua.thumbnail((500, 500))  # Redimensionar la imagen a 500x500
                 imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
                 self.previsualizacion.config(image=imagen_con_marca_de_agua)
                 self.previsualizacion.image = imagen_con_marca_de_agua
@@ -119,7 +119,7 @@ class AplicacionMarcaDeAgua:
             if archivos_imagen:
                 imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivos_imagen[0]))
                 imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=self.margen_superior.get(), margen_izquierdo=self.margen_izquierdo.get())
-                imagen_con_marca_de_agua.thumbnail((550, 550))  # Redimensionar la imagen a 550x550
+                imagen_con_marca_de_agua.thumbnail((500, 500))  # Redimensionar la imagen a 500x500
                 imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
                 self.previsualizacion.config(image=imagen_con_marca_de_agua)
                 self.previsualizacion.image = imagen_con_marca_de_agua
