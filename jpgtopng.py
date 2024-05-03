@@ -11,12 +11,13 @@ def seleccionar_carpeta():
     # Abrir el diálogo para seleccionar la carpeta
     carpeta = filedialog.askdirectory()
     if carpeta:
-        # Iterar sobre los archivos en la carpeta
-        for filename in os.listdir(carpeta):
-            if filename.endswith(".jpg") or filename.endswith(".jpeg"):
-                jpg_path = os.path.join(carpeta, filename)
-                png_path = os.path.join(carpeta, filename[:-4] + ".png")
-                convertir_jpg_a_png_con_resolucion(jpg_path, png_path)
+        # Iterar sobre los directorios y archivos dentro de la carpeta y sus subcarpetas
+        for root_dir, _, files in os.walk(carpeta):
+            for filename in files:
+                if filename.endswith(".jpg") or filename.endswith(".jpeg"):
+                    jpg_path = os.path.join(root_dir, filename)
+                    png_path = os.path.join(root_dir, filename[:-4] + ".png")
+                    convertir_jpg_a_png_con_resolucion(jpg_path, png_path)
         print("¡Proceso completado!")
 
 # Configurar la ventana principal de tkinter
