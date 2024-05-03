@@ -2,6 +2,7 @@ from tkinter import Tk, Button, Label, filedialog, Scale, messagebox, PhotoImage
 import os
 from PIL import Image, ImageTk
 from tkinter.ttk import Progressbar
+import time
 
 class AplicacionMarcaDeAgua:
     def __init__(self, ventana):
@@ -12,8 +13,8 @@ class AplicacionMarcaDeAgua:
         # Cargar el logo y redimensionarlo
         self.logo = PhotoImage(file="./logo.png")
         self.logo_label = Label(ventana, image=self.logo)
-        self.logo_label.image = self.logo  # Mantener una referencia para evitar que la imagen sea eliminada por el recolector de basura
-        self.logo_label.grid(row=0, column=0, pady=5, padx=5, sticky="n")  # Alinear la etiqueta en la parte superior
+        self.logo_label.image = self.logo  
+        self.logo_label.grid(row=0, column=0, pady=5, padx=5, sticky="n")  
 
         # Variables para almacenar la ruta de la imagen de marca de agua y la carpeta de imágenes
         self.ruta_marca_de_agua = ''
@@ -51,13 +52,8 @@ class AplicacionMarcaDeAgua:
         self.barra_progreso.grid(row=9, column=0, pady=5, padx=5, sticky="n")
 
         # Crear un marco para la previsualización y el borde negro
-<<<<<<< HEAD
         self.previsualizacion_frame = Frame(ventana, width=550, height=550, bd=2, relief="solid")
         self.previsualizacion_frame.grid(row=0, column=1, rowspan=10, pady=5, padx=5, sticky="nsew")
-=======
-        self.previsualizacion_frame = Frame(ventana, width=500, height=500, bd=2, relief="solid")
-        self.previsualizacion_frame.grid(row=0, column=1, rowspan=8, pady=5, padx=5, sticky="nsew")
->>>>>>> 521135834b555aad8dc3a9c4cd7b179a25e86262
         self.previsualizacion_frame.grid_propagate(False)  # Evitar que el marco cambie de tamaño
 
         # Etiqueta para la imagen de previsualización
@@ -75,7 +71,6 @@ class AplicacionMarcaDeAgua:
     def seleccionar_carpeta_imagenes(self):
         self.ruta_carpeta_imagenes = filedialog.askdirectory()
         if self.ruta_carpeta_imagenes:
-<<<<<<< HEAD
             self.path_carpeta_imagenes.set(self.ruta_carpeta_imagenes)
             self.boton_seleccionar_carpeta_imagenes.config(text=self.ruta_carpeta_imagenes)
             self.mostrar_previsualizacion()
@@ -90,16 +85,6 @@ class AplicacionMarcaDeAgua:
             imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
             self.previsualizacion.config(image=imagen_con_marca_de_agua)
             self.previsualizacion.image = imagen_con_marca_de_agua
-=======
-            archivos_imagen = [archivo for archivo in os.listdir(self.ruta_carpeta_imagenes) if archivo.endswith(('.jpg', '.jpeg', '.png'))]
-            if archivos_imagen:
-                imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivos_imagen[0]))
-                imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=10, margen_izquierdo=10)
-                imagen_con_marca_de_agua.thumbnail((500, 500))  # Redimensionar la imagen a 500x500
-                imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
-                self.previsualizacion.config(image=imagen_con_marca_de_agua)
-                self.previsualizacion.image = imagen_con_marca_de_agua
->>>>>>> 521135834b555aad8dc3a9c4cd7b179a25e86262
 
     def aplicar_marca_de_agua_a_imagen(self, imagen, margen_superior, margen_izquierdo):
         # Obtener la marca de agua y ajustar su tamaño
@@ -115,10 +100,13 @@ class AplicacionMarcaDeAgua:
 
     def aplicar_marca_de_agua(self):
         if self.ruta_marca_de_agua and self.ruta_carpeta_imagenes:
-            # Crear la carpeta "procesada" dentro de la carpeta de imágenes si no existe
+            # Crear las carpetas "procesada", "jpg" y "webp" dentro de la carpeta de imágenes si no existen
             carpeta_procesada = os.path.join(self.ruta_carpeta_imagenes, "procesada")
-            if not os.path.exists(carpeta_procesada):
-                os.makedirs(carpeta_procesada)
+            carpeta_jpg = os.path.join(carpeta_procesada, "jpg")
+            carpeta_webp = os.path.join(carpeta_procesada, "webp")
+            for carpeta in [carpeta_procesada, carpeta_jpg, carpeta_webp]:
+                if not os.path.exists(carpeta):
+                    os.makedirs(carpeta)
 
             archivos_imagen = [archivo for archivo in os.listdir(self.ruta_carpeta_imagenes) if archivo.endswith(('.jpg', '.jpeg', '.png'))]
             total_archivos = len(archivos_imagen)
@@ -137,29 +125,33 @@ class AplicacionMarcaDeAgua:
                 if archivo_imagen.endswith(('.jpg', '.jpeg', '.png')):
                     imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivo_imagen))
                     imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=self.margen_superior.get(), margen_izquierdo=self.margen_izquierdo.get())
-                    imagen_con_marca_de_agua.save(os.path.join(carpeta_procesada, archivo_imagen), quality=100)
+
+                    # Generar timestamp
+                    timestamp = str(int(time.time()))
+
+                    # Guardar imagen con marca de agua en formato webp o jpg con el nombre adecuado
+                    nombre_imagen_salida = os.path.splitext(archivo_imagen)[0]
+                    ruta_imagen_salida_jpg = os.path.join(carpeta_jpg, f"{nombre_imagen_salida}.jpg")
+                    ruta_imagen_salida_webp = os.path.join(carpeta_webp, f"{nombre_imagen_salida}-{timestamp}.webp")
+
+                    imagen_con_marca_de_agua.thumbnail((1200, 1200))  # Redimensionar la imagen a 1200x1200
+
+                    # Guardar imagen en formato webp
+                    imagen_con_marca_de_agua.save(ruta_imagen_salida_webp, "WEBP", quality=100)
+
+                    # Guardar imagen en formato jpg
+                    imagen_con_marca_de_agua.save(ruta_imagen_salida_jpg, "JPEG", quality=100)
 
             # Restablecer la barra de progreso después de completar el procesamiento
             self.barra_progreso["value"] = 0
-            messagebox.showinfo("Proceso Completado", f"Se han procesado y guardado {total_archivos} imágenes en la carpeta 'procesada'.")
+            messagebox.showinfo("Proceso Completado", f"Se han procesado y guardado {total_archivos} imágenes en las carpetas 'jpg' y 'webp' dentro de la carpeta 'procesada'.")
             
             # Abrir el explorador en la carpeta procesada
             os.startfile(carpeta_procesada)
 
     def actualizar_previsualizacion(self, *args):
         if self.ruta_carpeta_imagenes:
-<<<<<<< HEAD
             self.mostrar_previsualizacion()
-=======
-            archivos_imagen = [archivo for archivo in os.listdir(self.ruta_carpeta_imagenes) if archivo.endswith(('.jpg', '.jpeg', '.png'))]
-            if archivos_imagen:
-                imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivos_imagen[0]))
-                imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=self.margen_superior.get(), margen_izquierdo=self.margen_izquierdo.get())
-                imagen_con_marca_de_agua.thumbnail((500, 500))  # Redimensionar la imagen a 500x500
-                imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
-                self.previsualizacion.config(image=imagen_con_marca_de_agua)
-                self.previsualizacion.image = imagen_con_marca_de_agua
->>>>>>> 521135834b555aad8dc3a9c4cd7b179a25e86262
 
 if __name__ == "__main__":
     ventana_principal = Tk()
