@@ -1,4 +1,4 @@
-from tkinter import Tk, Button, Label, filedialog, Scale, messagebox, PhotoImage
+from tkinter import Tk, Button, Label, filedialog, Scale, messagebox, PhotoImage, Frame
 import os
 from PIL import Image, ImageTk
 from tkinter.ttk import Progressbar
@@ -7,13 +7,13 @@ class AplicacionMarcaDeAgua:
     def __init__(self, ventana):
         self.ventana = ventana
         self.ventana.title("Aplicación de Marca de Agua")
-        self.ventana.geometry("950x950")  # Establecer las dimensiones de la ventana
+        self.ventana.geometry("1200x600")  # Establecer las dimensiones de la ventana
 
         # Cargar el logo y redimensionarlo
         self.logo = PhotoImage(file="./logo.png")
         self.logo_label = Label(ventana, image=self.logo)
         self.logo_label.image = self.logo  # Mantener una referencia para evitar que la imagen sea eliminada por el recolector de basura
-        self.logo_label.pack(pady=5, padx=5, side="top", anchor="n")  # Alinear la etiqueta en la parte superior
+        self.logo_label.grid(row=0, column=0, pady=5, padx=5, sticky="n")  # Alinear la etiqueta en la parte superior
 
         # Variables para almacenar la ruta de la imagen de marca de agua y la carpeta de imágenes
         self.ruta_marca_de_agua = ''
@@ -28,27 +28,32 @@ class AplicacionMarcaDeAgua:
         self.tamano_marca_de_agua.set(100)
 
         # Botones para seleccionar la imagen de marca de agua y la carpeta de imágenes
-        Button(ventana, text="Seleccionar Imagen de Marca de Agua", command=self.seleccionar_marca_de_agua).pack(pady=5, padx=5, side="top", anchor="n")
-        Button(ventana, text="Seleccionar Carpeta de Imágenes", command=self.seleccionar_carpeta_imagenes).pack(pady=5, padx=5, side="top", anchor="n")
+        Button(ventana, text="Seleccionar Imagen de Marca de Agua", command=self.seleccionar_marca_de_agua).grid(row=1, column=0, pady=5, padx=5, sticky="n")
+        Button(ventana, text="Seleccionar Carpeta de Imágenes", command=self.seleccionar_carpeta_imagenes).grid(row=2, column=0, pady=5, padx=5, sticky="n")
 
         # Colocar sliders para el margen superior, izquierdo y tamaño de la marca de agua
-        self.margen_superior.pack(pady=5, padx=5, side="top", anchor="n")
-        self.margen_izquierdo.pack(pady=5, padx=5, side="top", anchor="n")
-        self.tamano_marca_de_agua.pack(pady=5, padx=5, side="top", anchor="n")
+        self.margen_superior.grid(row=3, column=0, pady=5, padx=5, sticky="n")
+        self.margen_izquierdo.grid(row=4, column=0, pady=5, padx=5, sticky="n")
+        self.tamano_marca_de_agua.grid(row=5, column=0, pady=5, padx=5, sticky="n")
 
-        # Botón para generar una nueva miniatura con los parámetros ingresados
-        Button(ventana, text="Actualizar Miniatura", command=self.actualizar_miniatura).pack(pady=5, padx=5, side="top", anchor="n")
-
-        # Etiqueta para mostrar una previsualización de la primera imagen en la carpeta de imágenes
-        self.previsualizacion = Label(ventana, bd=2, relief="solid")  # Añadir borde negro
-        self.previsualizacion.pack(pady=5, padx=5, side="top", anchor="n")
-        
         # Botón para aplicar la marca de agua a todas las imágenes en la carpeta
-        Button(ventana, text="Aplicar Marca de Agua", command=self.aplicar_marca_de_agua).pack(pady=5, padx=5, side="top", anchor="n")
+        Button(ventana, text="Aplicar Marca de Agua", command=self.aplicar_marca_de_agua).grid(row=6, column=0, pady=5, padx=5, sticky="n")
 
         # Barra de progreso
         self.barra_progreso = Progressbar(ventana, orient="horizontal", length=200, mode="determinate")
-        self.barra_progreso.pack(pady=5, padx=5, side="top", anchor="n")
+        self.barra_progreso.grid(row=7, column=0, pady=5, padx=5, sticky="n")
+
+        # Crear un marco para la previsualización y el borde negro
+        self.previsualizacion_frame = Frame(ventana, width=550, height=550, bd=2, relief="solid")
+        self.previsualizacion_frame.grid(row=0, column=1, rowspan=8, pady=5, padx=5, sticky="nsew")
+        self.previsualizacion_frame.grid_propagate(False)  # Evitar que el marco cambie de tamaño
+
+        # Etiqueta para la imagen de previsualización
+        self.previsualizacion = Label(self.previsualizacion_frame)
+        self.previsualizacion.pack(fill="both", expand=True)
+
+        # Botón para generar una nueva miniatura con los parámetros ingresados
+        Button(ventana, text="Actualizar Miniatura", command=self.actualizar_miniatura).grid(row=8, column=0, pady=5, padx=5, sticky="n")
 
     def seleccionar_marca_de_agua(self):
         self.ruta_marca_de_agua = filedialog.askopenfilename(filetypes=[("Imagen", "*.jpg;*.jpeg;*.png")])
@@ -61,12 +66,10 @@ class AplicacionMarcaDeAgua:
             if archivos_imagen:
                 imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivos_imagen[0]))
                 imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=10, margen_izquierdo=10)
-                imagen_con_marca_de_agua.thumbnail((350, 350))  # Tamaño de miniatura 350x350
+                imagen_con_marca_de_agua.thumbnail((550, 550))  # Redimensionar la imagen a 550x550
                 imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
                 self.previsualizacion.config(image=imagen_con_marca_de_agua)
                 self.previsualizacion.image = imagen_con_marca_de_agua
-                # Ajustar el tamaño de la etiqueta a la miniatura
-                self.previsualizacion.config(width=imagen_con_marca_de_agua.width(), height=imagen_con_marca_de_agua.height())
 
     def aplicar_marca_de_agua_a_imagen(self, imagen, margen_superior, margen_izquierdo):
         # Obtener la marca de agua y ajustar su tamaño
@@ -116,12 +119,10 @@ class AplicacionMarcaDeAgua:
             if archivos_imagen:
                 imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivos_imagen[0]))
                 imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=self.margen_superior.get(), margen_izquierdo=self.margen_izquierdo.get())
-                imagen_con_marca_de_agua.thumbnail((350, 350))  # Tamaño de miniatura 350x350
+                imagen_con_marca_de_agua.thumbnail((550, 550))  # Redimensionar la imagen a 550x550
                 imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
                 self.previsualizacion.config(image=imagen_con_marca_de_agua)
                 self.previsualizacion.image = imagen_con_marca_de_agua
-                # Ajustar el tamaño de la etiqueta a la miniatura
-                self.previsualizacion.config(width=imagen_con_marca_de_agua.width(), height=imagen_con_marca_de_agua.height())
 
 if __name__ == "__main__":
     ventana_principal = Tk()
