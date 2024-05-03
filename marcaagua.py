@@ -51,8 +51,13 @@ class AplicacionMarcaDeAgua:
         self.barra_progreso.grid(row=9, column=0, pady=5, padx=5, sticky="n")
 
         # Crear un marco para la previsualización y el borde negro
+<<<<<<< HEAD
         self.previsualizacion_frame = Frame(ventana, width=550, height=550, bd=2, relief="solid")
         self.previsualizacion_frame.grid(row=0, column=1, rowspan=10, pady=5, padx=5, sticky="nsew")
+=======
+        self.previsualizacion_frame = Frame(ventana, width=500, height=500, bd=2, relief="solid")
+        self.previsualizacion_frame.grid(row=0, column=1, rowspan=8, pady=5, padx=5, sticky="nsew")
+>>>>>>> 521135834b555aad8dc3a9c4cd7b179a25e86262
         self.previsualizacion_frame.grid_propagate(False)  # Evitar que el marco cambie de tamaño
 
         # Etiqueta para la imagen de previsualización
@@ -70,6 +75,7 @@ class AplicacionMarcaDeAgua:
     def seleccionar_carpeta_imagenes(self):
         self.ruta_carpeta_imagenes = filedialog.askdirectory()
         if self.ruta_carpeta_imagenes:
+<<<<<<< HEAD
             self.path_carpeta_imagenes.set(self.ruta_carpeta_imagenes)
             self.boton_seleccionar_carpeta_imagenes.config(text=self.ruta_carpeta_imagenes)
             self.mostrar_previsualizacion()
@@ -84,6 +90,16 @@ class AplicacionMarcaDeAgua:
             imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
             self.previsualizacion.config(image=imagen_con_marca_de_agua)
             self.previsualizacion.image = imagen_con_marca_de_agua
+=======
+            archivos_imagen = [archivo for archivo in os.listdir(self.ruta_carpeta_imagenes) if archivo.endswith(('.jpg', '.jpeg', '.png'))]
+            if archivos_imagen:
+                imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivos_imagen[0]))
+                imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=10, margen_izquierdo=10)
+                imagen_con_marca_de_agua.thumbnail((500, 500))  # Redimensionar la imagen a 500x500
+                imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
+                self.previsualizacion.config(image=imagen_con_marca_de_agua)
+                self.previsualizacion.image = imagen_con_marca_de_agua
+>>>>>>> 521135834b555aad8dc3a9c4cd7b179a25e86262
 
     def aplicar_marca_de_agua_a_imagen(self, imagen, margen_superior, margen_izquierdo):
         # Obtener la marca de agua y ajustar su tamaño
@@ -132,7 +148,18 @@ class AplicacionMarcaDeAgua:
 
     def actualizar_previsualizacion(self, *args):
         if self.ruta_carpeta_imagenes:
+<<<<<<< HEAD
             self.mostrar_previsualizacion()
+=======
+            archivos_imagen = [archivo for archivo in os.listdir(self.ruta_carpeta_imagenes) if archivo.endswith(('.jpg', '.jpeg', '.png'))]
+            if archivos_imagen:
+                imagen = Image.open(os.path.join(self.ruta_carpeta_imagenes, archivos_imagen[0]))
+                imagen_con_marca_de_agua = self.aplicar_marca_de_agua_a_imagen(imagen, margen_superior=self.margen_superior.get(), margen_izquierdo=self.margen_izquierdo.get())
+                imagen_con_marca_de_agua.thumbnail((500, 500))  # Redimensionar la imagen a 500x500
+                imagen_con_marca_de_agua = ImageTk.PhotoImage(imagen_con_marca_de_agua)
+                self.previsualizacion.config(image=imagen_con_marca_de_agua)
+                self.previsualizacion.image = imagen_con_marca_de_agua
+>>>>>>> 521135834b555aad8dc3a9c4cd7b179a25e86262
 
 if __name__ == "__main__":
     ventana_principal = Tk()
